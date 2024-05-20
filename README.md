@@ -1,39 +1,49 @@
-# devops-universal-starter
-<<<<<<< HEAD
+# DevOps Universal Starter
 
-This project is a comprehensive starter kit for building and deploying a microservices application using React.js, NestJS, and MongoDB. It is designed to incorporate best practices in CI/CD, monitoring, logging, and infrastructure management, providing a robust framework for modern software development and deployment.
+A full-fledged DevOps boilerplate designed to help you rapidly prototype, develop, and manage a scalable web application. This starter pack incorporates cutting-edge technologies across the stack, ensuring that both development and operations are streamlined.
 
 ## Table of Contents
-1. [Key Technologies](#key-technologies)
-2. [DevOps Practices](#devops-practices)
-3. [Testing Frameworks](#testing-frameworks)
-4. [Setup and Installation](#setup-and-installation)
-5. [Usage](#usage)
-6. [Contributing](#contributing)
-7. [License](#license)
+1. [Introduction](#introduction)
+2. [Key Technologies](#key-technologies)
+3. [DevOps Practices](#devops-practices)
+4. [Testing Frameworks](#testing-frameworks)
+5. [Setup and Installation](#setup-and-installation)
+6. [Usage](#usage)
+7. [Contributing](#contributing)
+8. [License](#license)
+
+## Introduction
+This project is a comprehensive starter kit for building and deploying a microservices application using Next.js, NestJS, and MongoDB. It is designed to incorporate best practices in CI/CD, monitoring, logging, and infrastructure management, providing a robust framework for modern software development and deployment. This starter kit aims to simplify the setup process, making it easier for developers to focus on building features rather than configuring infrastructure.
 
 ## Key Technologies
-- **Frontend:** React JS
-- **Backend:** Nest JS
+- **Frontend:** Next.js (with optional state management tools like Redux)
+- **Backend:** Nest.js
 - **Database:** MongoDB
+- **Caching:** Redis (optional)
 
 ## DevOps Practices
 - **Infrastructure as Code:** Terraform
 - **Containerization:** Docker
 - **Orchestration:** Kubernetes
 - **CI/CD Pipelines:** Jenkins / GitLab CI
-- **Monitoring & Logging:** Prometheus
+- **Monitoring & Logging:** Prometheus, Grafana, ELK Stack
 
 ## Testing Frameworks
 - **Frontend Tests:** Cypress
 - **Backend Tests:** Jest
 
 ## Setup and Installation
-1. **Clone the Repository:**
+1. **Prerequisites:**
+   - Node.js (version X.X.X)
+   - Docker
+   - Terraform (optional)
+
+2. **Clone the Repository:**
     ```bash
     git clone https://github.com/Hamza119612/devops-universal-starter.git
     ```
-2. **Install Dependencies:**
+
+3. **Install Dependencies:**
    - **Frontend:**
      ```bash
      cd frontend
@@ -45,14 +55,14 @@ This project is a comprehensive starter kit for building and deploying a microse
      npm install
      ```
 
-3. **Environment Configuration:**
-   Create a `.env` file in the root directory of both the `frontend` and `backend` folders using the provided `.env.example` as a template.
+4. **Environment Configuration:**
+   Create a `.env` file in the root directory of both the `frontend` and `backend` folders using the provided `.env.example` as a template. Ensure you add necessary environment variables such as database connection strings, API keys, etc.
 
-4. **Start the Application:**
+5. **Start the Application:**
    - **Frontend:**
      ```bash
      cd frontend
-     npm start
+     npm run dev
      ```
    - **Backend:**
      ```bash
@@ -60,10 +70,7 @@ This project is a comprehensive starter kit for building and deploying a microse
      npm run start:dev
      ```
 
-5. **Run Docker Containers (Optional):**
+6. **Run Docker Containers (Optional):**
    If you prefer Docker containers for the application, build and run the provided Docker Compose configuration:
    ```bash
-   docker-compose up --build
-=======
-A full-fledged DevOps boilerplate designed to help you rapidly prototype, develop, and manage a scalable web application. This starter pack incorporates cutting-edge technologies across the stack, ensuring that both development and operations are streamlined.
->>>>>>> 0ef04f2 (Initial commit)
+   docker-compose up -d
