@@ -1,45 +1,44 @@
-import { Injectable } from '@nestjs/common';
-import { EntityManager } from '@mikro-orm/mongodb';
-import { User } from '../../entities/user.entity';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { User } from './schemas/user.schema';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { InjectEntityManager } from '@mikro-orm/nestjs';
 
 @Injectable()
 export class UsersService {
-  constructor(
-    @InjectEntityManager('default')
-    private readonly em: EntityManager,
-  ) {}
+  constructor(@InjectModel(User.name) private userModel: Model<User>) {}
+
   async create(createUserDto: CreateUserDto): Promise<User> {
-    const user = this.em.create(User, createUserDto);
-    await this.em.persist(user).flush();
-    return user;
+    const createdUser = new this.userModel(createUserDto);
+    return createdUser.save();
   }
 
   async findAll(): Promise<User[]> {
-    return this.em.find(User, {});
+    return this.userModel.find().exec();
   }
 
   async findOne(id: string): Promise<User> {
-    return this.em.findOne(User, { _id: id });
-  }
-
-  async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {
-    const user = await this.findOne(id);
+    const user = await this.userModel.findById(id).exec();
     if (!user) {
-      throw new Error('User not found');
+      throw new NotFoundException(`User with ID ${id} not found`);
     }
-    this.em.assign(user, updateUserDto);
-    await this.em.flush();
     return user;
   }
 
-  async remove(id: string): Promise<void> {
-    const user = await this.findOne(id);
-    if (!user) {
-      throw new Error('User not found');
+  async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {
+    const existingUser = await this.userModel.findByIdAndUpdate(id, updateUserDto, { new: true }).exec();
+    if (!existingUser) {
+      throw new NotFoundException(`User with ID ${id} not found`);
     }
-    await this.em.remove(user).flush();
+    return existingUser;
+  }
+
+  async remove(id: string): Promise<User> {
+    const deletedUser = await this.userModel.findByIdAndDelete(id).exec();
+    if (!deletedUser) {
+      throw new NotFoundException(`User with ID ${id} not found`);
+    }
+    return deletedUser;
   }
 }
