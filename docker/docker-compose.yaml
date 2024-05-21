@@ -1,15 +1,37 @@
 version: '3.8'
 
 services:
-  mysql:
-    image: mysql:8.0
-    container_name: mysql_nestjs
+  backend:
+    build:
+      context: ../backend
+      dockerfile: Dockerfile
+    container_name: backend
     environment:
-      MYSQL_ROOT_PASSWORD: password
-      MYSQL_DATABASE: nestjs_db
-      MYSQL_USER: user
-      MYSQL_PASSWORD: password
+      - DATABASE_URI=mongodb://mongo:27017/nestjs
     ports:
-      - '3306:3306'
+      - '3000:3000'
+    depends_on:
+      - mongo
+
+  frontend:
+    build:
+      context: ../frontend
+      dockerfile: Dockerfile
+    container_name: nextjs_frontend
+    ports:
+      - '4002:4000'
     volumes:
-      - /home/mysql_data:/var/lib/mysql
+      - ../frontend:/app
+    environment:
+      - NODE_ENV=development
+
+  mongo:
+    image: mongo:4.4
+    container_name: mongo
+    ports:
+      - '27017:27017'
+    volumes:
+      - mongo_data:/data/db
+
+volumes:
+  mongo_data:
