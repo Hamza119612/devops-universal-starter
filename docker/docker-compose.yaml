@@ -19,9 +19,7 @@ services:
       dockerfile: Dockerfile
     container_name: nextjs_frontend
     ports:
-      - '4002:4000'
-    volumes:
-      - ../frontend:/app
+      - '3001:3000'
     environment:
       - NODE_ENV=development
 

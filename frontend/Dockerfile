@@ -1,13 +1,17 @@
-FROM node:18 
+FROM node:18
 
 WORKDIR /app
 
-COPY package*.json ./ 
+COPY package*.json ./
 
-RUN npm ci  
+RUN npm install
 
-COPY . . 
+COPY . .
 
-EXPOSE 4000
+RUN npm run build
 
-CMD ["npm", "run", "dev"] 
+RUN npm install -g serve
+
+EXPOSE 3000
+
+CMD ["serve", "-s", "build", "-l", "3000"]
