@@ -1,26 +1,36 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+// src/App.tsx
+import React, { useState, useEffect } from 'react';
+import { UserProvider } from './contexts/UserContext';
+import UserList from './components/UserList';
+import useFetch from './hooks/useFetch';
+import UserForm from './components/UseForm';
 
-function App() {
+const App: React.FC = () => {
+  const [loading, setLoading] = useState(true);
+  const { data } = useFetch('http://localhost:4000/users');
+
+  useEffect(() => {
+    if (data) {
+      setLoading(false);
+    }
+  }, [data]);
+
+  const handleUserAdded = () => {
+    setLoading(true);
+    setTimeout(() => setLoading(false), 1000);
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <UserProvider>
+      <div className="App">
+        <h1>User List</h1>
+        <UserList loading={loading} />
+        <h2>Add Users</h2>
+        <UserForm onUserAdded={handleUserAdded} />
+
+      </div>
+    </UserProvider>
   );
-}
+};
 
 export default App;
