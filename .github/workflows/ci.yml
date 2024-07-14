@@ -9,7 +9,7 @@ on:
       - main  # Adjust to your branch
 
 jobs:
-  build:
+  build_frontend:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -20,15 +20,19 @@ jobs:
         with:
           node-version: '14'  # Adjust to your Node.js version
 
-      - name: Install dependencies
-        run: npm install
+      - name: Install front-end dependencies
+        run: |
+          cd frontend
+          npm install
 
-      - name: Build project
-        run: npm run build
+      - name: Build front-end
+        run: |
+          cd frontend
+          npm run build
 
-  test:
+  test_frontend:
     runs-on: ubuntu-latest
-    needs: build
+    needs: build_frontend
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -38,28 +42,108 @@ jobs:
         with:
           node-version: '14'  # Adjust to your Node.js version
 
-      - name: Install dependencies
-        run: npm install
+      - name: Install front-end dependencies
+        run: |
+          cd frontend
+          npm install
 
-      - name: Run tests
-        run: npm test
+      - name: Run front-end tests
+        run: |
+          cd frontend
+          npm test
 
-  # deploy:
+  # deploy_frontend:
   #   runs-on: ubuntu-latest
-  #   needs: test
+  #   needs: test_frontend
   #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v2
+
+  #     - name: Set up Node.js
+  #       uses: actions/setup-node@v2
+  #       with:
+  #         node-version: '14'  # Adjust to your Node.js version
+
+  #     - name: Install front-end dependencies
+  #       run: |
+  #         cd frontend
+  #         npm install
+
+  #     - name: Deploy front-end
+  #       run: |
+  #         cd frontend
+  #         npm run deploy
+  #       env:
+  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # GitHub token for authentication if needed
+
+  build_backend:
+    runs-on: ubuntu-latest
+    steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
+      - name: Set up Python
+        uses: actions/setup-python@v2
         with:
-          node-version: '14.20'  # Adjust to your Node.js version
+          python-version: '3.8'  # Adjust to your Python version
 
-      - name: Install dependencies
-        run: npm install
+      - name: Install back-end dependencies
+        run: |
+          cd backend
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
 
-      - name: Deploy
-        run: npm run deploy
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # GitHub token for authentication if needed
+      - name: Build back-end
+        run: |
+          cd backend
+          # Add your build commands here
+          echo "Building the back-end..."
+
+  test_backend:
+    runs-on: ubuntu-latest
+    needs: build_backend
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.8'  # Adjust to your Python version
+
+      - name: Install back-end dependencies
+        run: |
+          cd backend
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run back-end tests
+        run: |
+          cd backend
+          pytest  # Adjust to your test command
+
+  # deploy_backend:
+  #   runs-on: ubuntu-latest
+  #   needs: test_backend
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v2
+
+  #     - name: Set up Python
+  #       uses: actions/setup-python@v2
+  #       with:
+  #         python-version: '3.8'  # Adjust to your Python version
+
+  #     - name: Install back-end dependencies
+  #       run: |
+  #         cd backend
+  #         python -m pip install --upgrade pip
+  #         pip install -r requirements.txt
+
+  #     - name: Deploy back-end
+  #       run: |
+  #         cd backend
+  #         # Add your deploy commands here
+  #         echo "Deploying the back-end..."
+  #       env:
+  #         DEPLOYMENT_API_KEY: ${{ secrets.DEPLOYMENT_API_KEY }}  # Deployment API key or other secrets
