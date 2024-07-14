@@ -1,0 +1,82 @@
+name: Frontend CI/CD
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    services:
+      docker:
+        image: docker:19.03.12
+        options: --privileged
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+
+      - name: Install dependencies
+        run: yarn install
+        working-directory: frontend
+
+      - name: Run tests
+        run: yarn test
+        working-directory: frontend
+
+      - name: Build the project
+        run: yarn build
+        working-directory: frontend
+
+      - name: Docker login
+        run: echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+      - name: Build Docker image
+        run: docker build -t ghcr.io/${{ github.repository }}/frontend:${{ github.sha }} .
+        working-directory: frontend
+
+      - name: Push Docker image
+        run: docker push ghcr.io/${{ github.repository }}/frontend:${{ github.sha }}
+
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@v1.4
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN_FRONTEND }}
+        with:
+          args: >
+            -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY_FRONTEND }}
+            -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION_FRONTEND }}
+            -Dsonar.sources=src
+            -Dsonar.tests=src
+            -Dsonar.inclusions=src/**/*.ts,src/**/*.tsx
+            -Dsonar.exclusions=src/**/*.test.ts,src/**/*.test.tsx
+            -Dsonar.typescript.lcov.reportPaths=coverage/lcov.info
+            -Dsonar.testExecutionReportPaths=coverage/test-report.xml
+
+  # deploy:
+  #   runs-on: ubuntu-latest
+  #   needs: build
+
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v2
+
+  #     - name: Set up Kubectl
+  #       uses: azure/setup-kubectl@v1
+
+  #     - name: Deploy to Kubernetes
+  #       run: |
+  #         kubectl apply -f k8s/deployment.yaml
+  #         kubectl apply -f k8s/service.yaml
+  #       env:
+  #         KUBECONFIG: ${{ secrets.KUBECONFIG }}
