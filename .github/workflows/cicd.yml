@@ -10,13 +10,16 @@ on:
 
 jobs:
   build_frontend:
-    uses: ./frontend/.github/workflows/frontend.yml
+    name: Build Frontend
+    uses: ./frontend/.github/workflows/frontend.yml@main
 
   build_backend:
+    name: Build Backend
     needs: build_frontend
-    uses: ./backend/.github/workflows/backend.yml
+    uses: ./backend/.github/workflows/backend.yml@main
 
   # deploy:
+  #   name: Deploy
   #   runs-on: ubuntu-latest
   #   needs: [build_frontend, build_backend]
 
