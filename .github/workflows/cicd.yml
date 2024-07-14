@@ -10,11 +10,11 @@ on:
 
 jobs:
   build_frontend:
-    uses: ./.github/workflows/frontend.yml
+    uses: ./frontend/.github/workflows/frontend.yml
 
   build_backend:
     needs: build_frontend
-    uses: ./.github/workflows/backend.yml
+    uses: ./backend/.github/workflows/backend.yml
 
   # deploy:
   #   runs-on: ubuntu-latest
