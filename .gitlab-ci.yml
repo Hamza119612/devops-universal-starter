@@ -1,0 +1,76 @@
+stages:
+  - build
+  - test
+  - quality
+  - deploy
+
+variables:
+  DOCKER_HOST: tcp://docker:2375/
+  DOCKER_DRIVER: overlay2
+  DOCKER_TLS_CERTDIR: ""
+
+services:
+  - docker:19.03.12
+
+before_script:
+  - docker info
+  - echo $CI_JOB_TOKEN | docker login -u gitlab-ci-token --password-stdin registry.gitlab.com
+
+build_frontend:
+  stage: build
+  script:
+    - cd frontend
+    - yarn install
+    - yarn build
+
+build_backend:
+  stage: build
+  script:
+    - cd backend
+    - yarn install
+    - yarn build
+
+test_frontend:
+  stage: test
+  script:
+    - cd frontend
+    - yarn install
+    - yarn test
+
+test_backend:
+  stage: test
+  script:
+    - cd backend
+    - yarn install
+    - yarn test
+
+quality_frontend:
+  stage: quality
+  script:
+    - cd frontend
+    - yarn install
+    - yarn sonar
+  only:
+    - merge_requests
+    - main
+
+quality_backend:
+  stage: quality
+  script:
+    - cd backend
+    - yarn install
+    - yarn sonar
+  only:
+    - merge_requests
+    - main
+
+deploy:
+  stage: deploy
+  script:
+    - kubectl apply -f k8s/deployment.yaml
+    - kubectl apply -f k8s/service.yaml
+  environment:
+    name: production
+    url: http://your-app-url
+  only:
+    - main
