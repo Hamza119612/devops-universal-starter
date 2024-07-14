@@ -23,7 +23,8 @@
     "eject": "react-scripts eject",
     "cypress:open": "cypress open",
     "cypress:run": "cypress run",
-    "test": "jest"
+    "test": "jest",
+    "sonar": "sonar-scanner"
   },
   "eslintConfig": {
     "extends": [
