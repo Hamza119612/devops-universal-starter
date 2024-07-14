@@ -20,7 +20,8 @@
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "migration:create": "migrate-mongo create",
     "migration:up": "migrate-mongo up",
-    "migration:down": "migrate-mongo down"
+    "migration:down": "migrate-mongo down",
+    "sonar": "sonar-scanner"
   },
   "dependencies": {
     "@nestjs/common": "^10.3.8",
