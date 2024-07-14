@@ -13,20 +13,21 @@ A full-fledged DevOps boilerplate designed to help you rapidly prototype, develo
 8. [License](#license)
 
 ## Introduction
-This project is a comprehensive starter kit for building and deploying a microservices application using Next.js, NestJS, and MongoDB. It is designed to incorporate best practices in CI/CD, monitoring, logging, and infrastructure management, providing a robust framework for modern software development and deployment. This starter kit aims to simplify the setup process, making it easier for developers to focus on building features rather than configuring infrastructure.
+This project is a comprehensive starter kit for building and deploying a microservices application using React, NestJS, and MongoDB. It is designed to incorporate best practices in CI/CD, monitoring, logging, and infrastructure management, providing a robust framework for modern software development and deployment. This starter kit aims to simplify the setup process, making it easier for developers to focus on building features rather than configuring infrastructure.
 
 ## Key Technologies
-- **Frontend:** Next.js (with optional state management tools like Redux)
+- **Frontend:** React (with optional state management tools like Redux)
 - **Backend:** Nest.js
 - **Database:** MongoDB
 - **Caching:** Redis (optional)
 
 ## DevOps Practices
-- **Infrastructure as Code:** Terraform
+- **Infrastructure as Code:** Terraform (optional)
 - **Containerization:** Docker
-- **Orchestration:** Kubernetes
-- **CI/CD Pipelines:** Jenkins / GitLab CI
+- **Orchestration:** Kubernetes (Minikube for local development)
+- **CI/CD Pipelines:** GitLab CI, GitHub Actions
 - **Monitoring & Logging:** Prometheus, Grafana, ELK Stack
+- **Package Management:** Helm
 
 ## Testing Frameworks
 - **Frontend Tests:** Cypress
@@ -37,6 +38,8 @@ This project is a comprehensive starter kit for building and deploying a microse
    - Node.js (version X.X.X)
    - Docker
    - Terraform (optional)
+   - Minikube (for local Kubernetes)
+   - Helm
 
 2. **Clone the Repository:**
     ```bash
@@ -47,12 +50,12 @@ This project is a comprehensive starter kit for building and deploying a microse
    - **Frontend:**
      ```bash
      cd frontend
-     npm install
+     yarn install
      ```
    - **Backend:**
      ```bash
      cd backend
-     npm install
+     yarn install
      ```
 
 4. **Environment Configuration:**
@@ -62,12 +65,12 @@ This project is a comprehensive starter kit for building and deploying a microse
    - **Frontend:**
      ```bash
      cd frontend
-     npm run dev
+     yarn start
      ```
    - **Backend:**
      ```bash
      cd backend
-     npm run start:dev
+     yarn start:dev
      ```
 
 6. **Run Docker Containers (Optional):**
