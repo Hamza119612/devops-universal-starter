@@ -7,10 +7,9 @@ stages:
 variables:
   DOCKER_HOST: tcp://docker:2375/
   DOCKER_DRIVER: overlay2
-  DOCKER_TLS_CERTDIR: ""
 
 services:
-  - docker:19.03.12
+  - docker:dind
 
 before_script:
   - docker info
@@ -18,20 +17,23 @@ before_script:
 
 build_frontend:
   stage: build
+  image: docker:latest
   script:
     - cd frontend
-    - yarn install
-    - yarn build
+    - docker build -t registry.gitlab.com/your-username/your-project/frontend:$CI_COMMIT_SHORT_SHA .
+    - docker push registry.gitlab.com/your-username/your-project/frontend:$CI_COMMIT_SHORT_SHA
 
 build_backend:
   stage: build
+  image: docker:latest
   script:
     - cd backend
-    - yarn install
-    - yarn build
+    - docker build -t registry.gitlab.com/your-username/your-project/backend:$CI_COMMIT_SHORT_SHA .
+    - docker push registry.gitlab.com/your-username/your-project/backend:$CI_COMMIT_SHORT_SHA
 
 test_frontend:
   stage: test
+  image: node:14
   script:
     - cd frontend
     - yarn install
@@ -39,6 +41,7 @@ test_frontend:
 
 test_backend:
   stage: test
+  image: node:14
   script:
     - cd backend
     - yarn install
@@ -46,26 +49,27 @@ test_backend:
 
 quality_frontend:
   stage: quality
+  image: sonarsource/sonar-scanner-cli
   script:
     - cd frontend
-    - yarn install
-    - yarn sonar
+    - sonar-scanner -Dsonar.projectKey=$SONAR_PROJECT_KEY_FRONTEND -Dsonar.organization=$SONAR_ORGANIZATION_FRONTEND -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=$SONAR_TOKEN_FRONTEND
   only:
     - merge_requests
     - main
 
 quality_backend:
   stage: quality
+  image: sonarsource/sonar-scanner-cli
   script:
     - cd backend
-    - yarn install
-    - yarn sonar
+    - sonar-scanner -Dsonar.projectKey=$SONAR_PROJECT_KEY_BACKEND -Dsonar.organization=$SONAR_ORGANIZATION_BACKEND -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=$SONAR_TOKEN_BACKEND
   only:
     - merge_requests
     - main
 
 deploy:
   stage: deploy
+  image: google/cloud-sdk:latest
   script:
     - kubectl apply -f k8s/deployment.yaml
     - kubectl apply -f k8s/service.yaml
